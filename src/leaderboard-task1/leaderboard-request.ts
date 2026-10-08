@@ -1,0 +1,28 @@
+import { z } from "zod";
+import { CUSTOMER_FIELDS } from "./customer.js";
+
+const tag = z
+  .string()
+  .trim()
+  .min(1)
+  .max(255)
+  .regex(/^[\p{L}\p{N} _:.\-]+$/u, "Tags may only contain letters, numbers, spaces and : _ . -");
+
+export const leaderboardRequestSchema = z.object({
+  tags: z.array(tag).max(10).default(["task1", "level:3"]),
+  limit: z.number().int().min(50).max(100).default(50),
+  sort: z
+    .object({
+      by: z.enum(["spend", "name"]).default("spend"),
+      order: z.enum(["asc", "desc"]).default("desc"),
+    })
+    .prefault({}),
+  fields: z
+    .array(z.enum(CUSTOMER_FIELDS))
+    .min(1)
+    .max(CUSTOMER_FIELDS.length)
+    .refine((fields) => new Set(fields).size === fields.length, "Fields must not repeat")
+    .default(["customer", "spend"]),
+});
+
+export type LeaderboardRequest = z.infer<typeof leaderboardRequestSchema>;

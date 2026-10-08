@@ -1,8 +1,8 @@
-import { createApp } from "./app.js";
+import { compose } from "./composition-root.js";
 import { loadEnv } from "./shared/env.js";
 
 const env = loadEnv();
-const app = createApp();
+const app = compose(env);
 
 app.listen(env.PORT, (error) => {
   if (error) throw error;

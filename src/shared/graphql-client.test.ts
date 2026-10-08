@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppError } from "./errors.js";
 import { GraphQLClient } from "./graphql-client.js";
 
@@ -26,8 +26,27 @@ async function expectUpstreamError(promise: Promise<unknown>, cause: unknown) {
 }
 
 describe("GraphQLClient", () => {
+  beforeEach(() => {
+    vi.spyOn(console, "log").mockImplementation(() => { });
+  });
+
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("logs the store endpoint and the API version Shopify answered with", async () => {
+    stubFetch(
+      new Response(JSON.stringify({ data: {} }), {
+        headers: { "Content-Type": "application/json", "X-Shopify-API-Version": "2026-01" },
+      }),
+    );
+
+    await client.request("{ shop { name } }");
+
+    expect(console.log).toHaveBeenCalledWith(
+      "Shopify call on store.myshopify.com/admin/api/2025-01/graphql.json",
+    );
   });
 
   it("sends the query as a JSON POST and returns data", async () => {

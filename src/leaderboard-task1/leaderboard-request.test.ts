@@ -15,6 +15,10 @@ describe("leaderboardRequestSchema", () => {
     expect(leaderboardRequestSchema.safeParse({ tags: ["task1'"] }).success).toBe(false);
   });
 
+  it.each([{ limt: 100 }, { sort: { ordr: "asc" } }])("rejects unknown keys %j", (body) => {
+    expect(leaderboardRequestSchema.safeParse(body).success).toBe(false);
+  });
+
   it.each([49, 101])("rejects limit %i (allowed: 50 to 100)", (limit) => {
     expect(leaderboardRequestSchema.safeParse({ limit }).success).toBe(false);
   });

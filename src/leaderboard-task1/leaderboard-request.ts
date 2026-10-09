@@ -8,11 +8,11 @@ const tag = z
   .max(255)
   .regex(/^[\p{L}\p{N} _:.\-]+$/u, "Tags may only contain letters, numbers, spaces and : _ . -");
 
-export const leaderboardRequestSchema = z.object({
+export const leaderboardRequestSchema = z.strictObject({
   tags: z.array(tag).max(10).default(["task1", "level:3"]),
   limit: z.number().int().min(50).max(100).default(50),
   sort: z
-    .object({
+    .strictObject({
       by: z.enum(["spend", "name"]).default("spend"),
       order: z.enum(["asc", "desc"]).default("desc"),
     })

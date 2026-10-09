@@ -11,7 +11,8 @@
     "build": "tsc",
     "start": "node --env-file-if-exists=.env dist/server.js",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test-verbose": "vitest run --passWithNoTests --reporter=verbose"
   },
   "dependencies": {
     "express": "^5.2.1",

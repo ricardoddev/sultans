@@ -4,6 +4,7 @@ import { CsvExporter } from "./leaderboard-task1/exporters/csv-exporter.js";
 import { GenerateLeaderboard } from "./leaderboard-task1/generate-leaderboard.js";
 import { createLeaderboardRouter } from "./leaderboard-task1/leaderboard-router.js";
 import { ShopifyCustomerRepository } from "./leaderboard-task1/repositories/shopify-customer-repository.js";
+import { bearerAuth } from "./shared/auth.js";
 import type { Env } from "./shared/env.js";
 import { GraphQLClient } from "./shared/graphql-client.js";
 
@@ -18,5 +19,7 @@ export function compose(env: Env): Express {
   const customerRepository = new ShopifyCustomerRepository(adminClient);
   const generateLeaderboard = new GenerateLeaderboard(customerRepository, reportExporter);
 
-  return createApp([createLeaderboardRouter(generateLeaderboard)]);
+  const appBearerToken = env.API_TOKEN
+
+  return createApp(bearerAuth(appBearerToken), [createLeaderboardRouter(generateLeaderboard)]);
 }

@@ -1,9 +1,10 @@
-import express, { type Express, type Router } from "express";
+import express, { type Express, type RequestHandler, type Router } from "express";
 import { errorHandler, notFoundHandler } from "./shared/errors.js";
 
-export function createApp(routers: Router[]): Express {
+export function createApp(auth: RequestHandler, routers: Router[]): Express {
   const app = express();
 
+  app.use(auth);
   app.use(express.json());
 
   for (const router of routers) {

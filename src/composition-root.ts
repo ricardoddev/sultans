@@ -13,8 +13,10 @@ export function compose(env: Env): Express {
     headers: { "X-Shopify-Access-Token": env.SHOPIFY_ACCESS_TOKEN },
   });
 
+  const reportExporter = new CsvExporter()
+
   const customerRepository = new ShopifyCustomerRepository(adminClient);
-  const generateLeaderboard = new GenerateLeaderboard(customerRepository, new CsvExporter());
+  const generateLeaderboard = new GenerateLeaderboard(customerRepository, reportExporter);
 
   return createApp([createLeaderboardRouter(generateLeaderboard)]);
 }

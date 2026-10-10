@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import type { Customer } from "./customer.js";
-import type { ReportExporter } from "./exporters/report-exporter.js";
+import type { Customer } from "./customer-domain.js";
+import type { ReportExporter } from "./ports/report-exporter.js";
 import { GenerateLeaderboard } from "./generate-leaderboard.js";
-import { leaderboardRequestSchema } from "./leaderboard-request.js";
-import type { CustomerRepository, TopSpendersCriteria } from "./repositories/customer-repository.js";
+import { leaderboardRequestSchema } from "./leaderboard-schema.js";
+import type { CustomerRepository, TopSpendersCriteria } from "./ports/customer-repository.js";
 
 const CUSTOMERS: Customer[] = [
   { id: "1", displayName: "Carol", amountSpent: "9.0", email: "carol@example.com", numberOfOrders: "1" },

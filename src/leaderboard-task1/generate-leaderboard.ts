@@ -1,7 +1,7 @@
-import type { Customer, CustomerField } from "./customer.js";
-import type { LeaderboardRequest } from "./leaderboard-request.js";
-import type { CustomerRepository } from "./repositories/customer-repository.js";
-import type { ReportExporter } from "./exporters/report-exporter.js";
+import type { Customer, CustomerField } from "./customer-domain.js";
+import type { LeaderboardRequest } from "./leaderboard-schema.js";
+import type { CustomerRepository } from "./ports/customer-repository.js";
+import type { ReportExporter } from "./ports/report-exporter.js";
 
 export interface LeaderboardReport {
   content: string;

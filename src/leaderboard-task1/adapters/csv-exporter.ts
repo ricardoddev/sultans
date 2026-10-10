@@ -1,4 +1,4 @@
-import type { ReportExporter } from "./report-exporter.js";
+import type { ReportExporter } from "../ports/report-exporter.js";
 
 const BOM = "﻿";
 const NEEDS_QUOTES = /[",\r\n]/;

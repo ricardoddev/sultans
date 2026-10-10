@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { GenerateLeaderboard } from "./generate-leaderboard.js";
-import { leaderboardRequestSchema } from "./leaderboard-request.js";
+import { leaderboardRequestSchema } from "./leaderboard-schema.js";
 
 function timestamp(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");

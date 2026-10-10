@@ -1,6 +1,7 @@
 import { AppError } from "../../shared/errors.js";
 import type { GraphQLClient } from "../../shared/graphql-client.js";
-import type { FlagInventory, FlagLocation, FlagOrder, FlagRepository, FlagVariant, StockLocation } from "./flag-repository.js";
+import type { FlagInventory, FlagLocation, FlagOrder, FlagVariant, StockLocation } from "../flag-domain.js";
+import type { FlagRepository } from "../ports/flag-repository.js";
 
 interface UserError {
   field: string[] | null;

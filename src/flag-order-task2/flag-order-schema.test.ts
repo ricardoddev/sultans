@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { flagOrderSchema } from "./flag-order-request.js";
+import { flagOrderSchema } from "./flag-order-schema.js";
 
 describe("flagOrderSchema", () => {
   it("turns an empty request into exactly Task 2", () => {

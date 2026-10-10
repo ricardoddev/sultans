@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { CaptureFlagOrder } from "./capture-flag-order.js";
-import { flagOrderSchema } from "./flag-order-request.js";
+import { flagOrderSchema } from "./flag-order-schema.js";
 
 export function createFlagOrderRouter(captureFlagOrder: CaptureFlagOrder): Router {
   const router = Router();

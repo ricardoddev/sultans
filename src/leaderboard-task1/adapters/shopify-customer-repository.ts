@@ -1,6 +1,6 @@
 import type { GraphQLClient } from "../../shared/graphql-client.js";
-import type { Customer, CustomerField } from "../customer.js";
-import type { CustomerRepository, TopSpendersCriteria } from "./customer-repository.js";
+import type { Customer, CustomerField } from "../customer-domain.js";
+import type { CustomerRepository, TopSpendersCriteria } from "../ports/customer-repository.js";
 
 const BASE_SELECTION = "id displayName amountSpent { amount }";
 

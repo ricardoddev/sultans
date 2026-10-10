@@ -1,6 +1,7 @@
 import { AppError } from "../shared/errors.js";
-import type { FlagOrderRequest, ShippingAddress } from "./flag-order-request.js";
-import type { FlagInventory, FlagOrder, FlagRepository, FlagVariant } from "./repositories/flag-repository.js";
+import type { FlagOrderRequest, ShippingAddress } from "./flag-order-schema.js";
+import type { FlagInventory, FlagOrder, FlagVariant } from "./flag-domain.js";
+import type { FlagRepository } from "./ports/flag-repository.js";
 
 export interface CapturedFlagOrder {
   order: { id: string; name: string; createdAt: string };

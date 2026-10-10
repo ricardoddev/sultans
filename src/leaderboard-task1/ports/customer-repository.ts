@@ -1,4 +1,4 @@
-import type { Customer, CustomerField } from "../customer.js";
+import type { Customer, CustomerField } from "../customer-domain.js";
 
 export interface TopSpendersCriteria {
   tags: string[];

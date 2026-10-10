@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildCheckoutUrl, CaptureFlagOrder, pickNewOrder, refloodDelta } from "./capture-flag-order.js";
-import type { FlagOrderRequest } from "./flag-order-request.js";
-import type { FlagInventory, FlagOrder, FlagRepository } from "./repositories/flag-repository.js";
+import type { FlagOrderRequest } from "./flag-order-schema.js";
+import type { FlagInventory, FlagOrder } from "./flag-domain.js";
+import type { FlagRepository } from "./ports/flag-repository.js";
 
 const VARIANT = { variantId: "gid://shopify/ProductVariant/42", inventoryItemId: "gid://shopify/InventoryItem/7" };
 const MAIN = "gid://shopify/Location/1";

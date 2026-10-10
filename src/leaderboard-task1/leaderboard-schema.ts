@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CUSTOMER_FIELDS } from "./customer.js";
+import { CUSTOMER_FIELDS } from "./customer-domain.js";
 
 const tag = z
   .string()
@@ -14,8 +14,9 @@ export const leaderboardRequestSchema = z.strictObject({
   sort: z
     .strictObject({
       by: z.enum(["spend", "name"]).default("spend"),
-      order: z.enum(["asc", "desc"]).default("desc"),
+      order: z.enum(["asc", "desc"]).optional(),
     })
+    .transform(({ by, order }) => ({ by, order: order ?? (by === "name" ? "asc" : "desc") }))
     .prefault({}),
   fields: z
     .array(z.enum(CUSTOMER_FIELDS))

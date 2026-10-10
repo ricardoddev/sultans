@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { leaderboardRequestSchema } from "./leaderboard-request.js";
+import { leaderboardRequestSchema } from "./leaderboard-schema.js";
 
 describe("leaderboardRequestSchema", () => {
   it("turns an empty body into exactly Task 1", () => {
@@ -9,6 +9,14 @@ describe("leaderboardRequestSchema", () => {
       sort: { by: "spend", order: "desc" },
       fields: ["customer", "spend"],
     });
+  });
+
+  it.each([
+    [{ by: "name" }, { by: "name", order: "asc" }],
+    [{ by: "spend" }, { by: "spend", order: "desc" }],
+    [{ by: "name", order: "desc" }, { by: "name", order: "desc" }],
+  ])("defaults sort order by field %j", (sort, expected) => {
+    expect(leaderboardRequestSchema.parse({ sort }).sort).toEqual(expected);
   });
 
   it("rejects tags that could break out of the segment query", () => {

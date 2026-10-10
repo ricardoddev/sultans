@@ -1,5 +1,8 @@
 import type { Express } from "express";
 import { createApp } from "./app.js";
+import { CaptureFlagOrder } from "./flag-order-task2/capture-flag-order.js";
+import { createFlagOrderRouter } from "./flag-order-task2/flag-order-router.js";
+import { ShopifyFlagRepository } from "./flag-order-task2/repositories/shopify-flag-repository.js";
 import { CsvExporter } from "./leaderboard-task1/exporters/csv-exporter.js";
 import { GenerateLeaderboard } from "./leaderboard-task1/generate-leaderboard.js";
 import { createLeaderboardRouter } from "./leaderboard-task1/leaderboard-router.js";
@@ -19,7 +22,13 @@ export function compose(env: Env): Express {
   const customerRepository = new ShopifyCustomerRepository(adminClient);
   const generateLeaderboard = new GenerateLeaderboard(customerRepository, reportExporter);
 
+  const flagRepository = new ShopifyFlagRepository(adminClient, env.SHOPIFY_STORE);
+  const captureFlagOrder = new CaptureFlagOrder(flagRepository, env.SHOPIFY_STORE);
+
   const appBearerToken = env.API_TOKEN
 
-  return createApp(bearerAuth(appBearerToken), [createLeaderboardRouter(generateLeaderboard)]);
+  return createApp(bearerAuth(appBearerToken), [
+    createLeaderboardRouter(generateLeaderboard),
+    createFlagOrderRouter(captureFlagOrder),
+  ]);
 }

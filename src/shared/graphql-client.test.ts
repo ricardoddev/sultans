@@ -34,54 +34,40 @@ describe("GraphQLClient", () => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
+});
 
-  it("logs the store endpoint and the API version Shopify answered with", async () => {
-    stubFetch(
-      new Response(JSON.stringify({ data: {} }), {
-        headers: { "Content-Type": "application/json", "X-Shopify-API-Version": "2026-01" },
-      }),
-    );
+it("sends the query as a JSON POST and returns data", async () => {
+  const fetchMock = stubFetch(jsonResponse({ data: { shop: { name: "x" } } }));
 
-    await client.request("{ shop { name } }");
+  const data = await client.request("query Q($id: ID!) { node(id: $id) { id } }", { id: "1" });
 
-    expect(console.log).toHaveBeenCalledWith(
-      "Shopify call on store.myshopify.com/admin/api/2025-01/graphql.json",
-    );
+  expect(data).toEqual({ shop: { name: "x" } });
+  const [url, init] = fetchMock.mock.calls[0]!;
+  expect(url).toBe(ENDPOINT);
+  expect(init?.method).toBe("POST");
+  expect(init?.headers).toEqual({ "Content-Type": "application/json", "X-Shopify-Access-Token": "token" });
+  expect(JSON.parse(init?.body as string)).toEqual({
+    query: "query Q($id: ID!) { node(id: $id) { id } }",
+    variables: { id: "1" },
   });
+});
 
-  it("sends the query as a JSON POST and returns data", async () => {
-    const fetchMock = stubFetch(jsonResponse({ data: { shop: { name: "x" } } }));
+it("fails on non-2xx HTTP responses", async () => {
+  stubFetch(new Response("Unauthorized", { status: 401 }));
 
-    const data = await client.request("query Q($id: ID!) { node(id: $id) { id } }", { id: "1" });
+  await expectUpstreamError(client.request("{ shop { name } }"), { status: 401, body: "Unauthorized" });
+});
 
-    expect(data).toEqual({ shop: { name: "x" } });
-    const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toBe(ENDPOINT);
-    expect(init?.method).toBe("POST");
-    expect(init?.headers).toEqual({ "Content-Type": "application/json", "X-Shopify-Access-Token": "token" });
-    expect(JSON.parse(init?.body as string)).toEqual({
-      query: "query Q($id: ID!) { node(id: $id) { id } }",
-      variables: { id: "1" },
-    });
-  });
+it("fails on GraphQL errors, even with partial data", async () => {
+  const errors = [{ message: "Throttled", extensions: { code: "THROTTLED" } }];
+  stubFetch(jsonResponse({ data: { shop: null }, errors }));
 
-  it("fails on non-2xx HTTP responses", async () => {
-    stubFetch(new Response("Unauthorized", { status: 401 }));
+  await expectUpstreamError(client.request("{ shop { name } }"), errors);
+});
 
-    await expectUpstreamError(client.request("{ shop { name } }"), { status: 401, body: "Unauthorized" });
-  });
+it("fails on network errors", async () => {
+  const networkError = new TypeError("fetch failed");
+  stubFetch(networkError);
 
-  it("fails on GraphQL errors, even with partial data", async () => {
-    const errors = [{ message: "Throttled", extensions: { code: "THROTTLED" } }];
-    stubFetch(jsonResponse({ data: { shop: null }, errors }));
-
-    await expectUpstreamError(client.request("{ shop { name } }"), errors);
-  });
-
-  it("fails on network errors", async () => {
-    const networkError = new TypeError("fetch failed");
-    stubFetch(networkError);
-
-    await expectUpstreamError(client.request("{ shop { name } }"), networkError);
-  });
+  await expectUpstreamError(client.request("{ shop { name } }"), networkError);
 });

@@ -34,9 +34,6 @@ export class GraphQLClient {
       throw upstreamError(error);
     }
 
-    const { host, pathname } = new URL(this.config.endpoint);
-    console.log(`Shopify call on ${host}${pathname}`);
-
     if (!response.ok) {
       throw upstreamError({ status: response.status, body: await response.text() });
     }

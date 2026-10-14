@@ -139,11 +139,11 @@ describe("buildCheckoutUrl", () => {
     );
   });
 
-  it("appends only the shipping fields that are present", () => {
+  it("appends only the billing fields that are present", () => {
     const url = buildCheckoutUrl("https://shop.myshopify.com", "42", "me@example.com", { firstName: "Jo Jo", zip: "A1A 1A1" });
 
-    expect(url).toContain("checkout[shipping_address][first_name]=Jo%20Jo");
-    expect(url).toContain("checkout[shipping_address][zip]=A1A%201A1");
+    expect(url).toContain("checkout[billing_address][first_name]=Jo%20Jo");
+    expect(url).toContain("checkout[billing_address][zip]=A1A%201A1");
     expect(url).not.toContain("last_name");
   });
 });

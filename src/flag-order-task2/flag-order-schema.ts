@@ -24,7 +24,7 @@ const serviceName = z
 
 const addressField = z.string().trim().min(1).max(255).optional();
 
-const shippingAddressSchema = z.strictObject({
+const billingAddressSchema = z.strictObject({
   firstName: addressField,
   lastName: addressField,
   address1: addressField,
@@ -42,8 +42,8 @@ export const flagOrderSchema = z.strictObject({
   margin: z.number().int().min(1).max(1_000_000).default(3000),
   holdSeconds: z.number().int().min(5).max(600).default(120),
   cleanup: z.boolean().default(true),
-  shippingAddress: shippingAddressSchema.optional(),
+  billingAddress: billingAddressSchema.optional(),
 });
 
 export type FlagOrderRequest = z.infer<typeof flagOrderSchema>;
-export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
+export type BillingAddress = z.infer<typeof billingAddressSchema>;

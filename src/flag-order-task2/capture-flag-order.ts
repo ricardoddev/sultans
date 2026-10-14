@@ -1,5 +1,5 @@
 import { AppError } from "../shared/errors.js";
-import type { FlagOrderRequest, ShippingAddress } from "./flag-order-schema.js";
+import type { BillingAddress, FlagOrderRequest } from "./flag-order-schema.js";
 import type { FlagInventory, FlagOrder, FlagVariant } from "./flag-domain.js";
 import type { FlagRepository } from "./ports/flag-repository.js";
 
@@ -15,7 +15,7 @@ export interface CapturedFlagOrder {
 const REFLOOD_INTERVAL_MS = 400;
 const ORDER_POLL_INTERVAL_MS = 5000;
 
-const SHIPPING_FIELDS: ReadonlyArray<[keyof ShippingAddress, string]> = [
+const BILLING_FIELDS: ReadonlyArray<[keyof BillingAddress, string]> = [
   ["firstName", "first_name"],
   ["lastName", "last_name"],
   ["address1", "address1"],
@@ -40,12 +40,12 @@ export function pickNewOrder(orders: FlagOrder[], existingIds: Set<string>): Fla
   return orders.find((order) => !existingIds.has(order.id));
 }
 
-export function buildCheckoutUrl(storeUrl: string, variantNum: string, email: string, shippingAddress?: ShippingAddress): string {
+export function buildCheckoutUrl(storeUrl: string, variantNum: string, email: string, billingAddress?: BillingAddress): string {
   const parts = [`checkout[email]=${encodeURIComponent(email)}`];
-  for (const [field, param] of SHIPPING_FIELDS) {
-    const value = shippingAddress?.[field];
+  for (const [field, param] of BILLING_FIELDS) {
+    const value = billingAddress?.[field];
     if (value) {
-      parts.push(`checkout[shipping_address][${param}]=${encodeURIComponent(value)}`);
+      parts.push(`checkout[billing_address][${param}]=${encodeURIComponent(value)}`);
     }
   }
   return `${storeUrl}/cart/${variantNum}:1?${parts.join("&")}`;
@@ -67,7 +67,7 @@ export class CaptureFlagOrder {
     this.capturing = true;
 
     try {
-      const { email, sku, serviceName, margin, holdSeconds, cleanup, shippingAddress } = request;
+      const { email, sku, serviceName, margin, holdSeconds, cleanup, billingAddress } = request;
 
       const variant = await this.flags.findVariantBySku(sku);
       if (!variant) {
@@ -79,7 +79,7 @@ export class CaptureFlagOrder {
       const main = before.levels.find((level) => level.locationId !== locationId);
       const existingOrderIds = new Set((await this.flags.findOrders({ sku, email })).map((order) => order.id));
 
-      const checkoutUrl = buildCheckoutUrl(this.storeUrl, numericId(variant.variantId), email, shippingAddress);
+      const checkoutUrl = buildCheckoutUrl(this.storeUrl, numericId(variant.variantId), email, billingAddress);
       console.log(`[flag-order] checkout ready, complete it in the browser: ${checkoutUrl}`);
 
       let order: FlagOrder | undefined;

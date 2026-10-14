@@ -27,7 +27,7 @@ describe("leaderboardRequestSchema", () => {
     expect(leaderboardRequestSchema.safeParse(body).success).toBe(false);
   });
 
-  it.each([49, 101])("rejects limit %i (allowed: 50 to 100)", (limit) => {
+  it.each([19, 251])("rejects limit %i (allowed: 20 to 250)", (limit) => {
     expect(leaderboardRequestSchema.safeParse({ limit }).success).toBe(false);
   });
 });

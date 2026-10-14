@@ -10,7 +10,7 @@ const tag = z
 
 export const leaderboardRequestSchema = z.strictObject({
   tags: z.array(tag).max(10).default(["task1", "level:3"]),
-  limit: z.number().int().min(50).max(100).default(50),
+  limit: z.number().int().min(20).max(250).default(50),
   sort: z
     .strictObject({
       by: z.enum(["spend", "name"]).default("spend"),
